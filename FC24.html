@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: #000;
+            text-align: center;
+            margin: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-row {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .top-row img {
+            max-height: 200px;
+        }
+
+        .generator-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .team-generator {
+            width: 48%;
+            margin-bottom: 20px;
+            background-color: rgba(236, 240, 241, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #000;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #2ecc71;
+            color: #030202;
+            border: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        .log-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .log {
+            width: 48%;
+            background-color: rgba(236, 240, 241, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #log-list1,
+        #log-list2 {
+            list-style: none;
+            padding: 0;
+        }
+
+        .log-list-item {
+            margin: 5px 0;
+        }
+
+        .reset-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #e74c3c;
+            color: #030303;
+            border: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .reset-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-row">
+        <!-- Example images, replace with your own image URLs -->
+        <img src="ronaldo.jpg" alt="Image 1">
+        <img src="jose.jpg" alt="Image 2">
+        <img src="maldo_highschool.JPG" alt="Image 3">
+    </div>
+
+    <h1>Cole "Bucket" Borden's Famous FC24 Team Generator</h1>
+    <div class="generator-container">
+        <div class="team-generator">
+            <p id="team1"></p>
+            <button onclick="generateTeam('team1')">Generate Team</button>
+        </div>
+        <div class="team-generator">
+            <p id="team2"></p>
+            <button onclick="generateTeam('team2')">Generate Team</button>
+        </div>
+    </div>
+
+    <div class="log-container">
+        <div class="log">
+            <h2>Team Log 1</h2>
+            <ul id="log-list1"></ul>
+            <button class="reset-button" onclick="resetLog('log-list1')">Reset Log 1</button>
+        </div>
+        <div class="log">
+            <h2>Team Log 2</h2>
+            <ul id="log-list2"></ul>
+            <button class="reset-button" onclick="resetLog('log-list2')">Reset Log 2</button>
+        </div>
+    </div>
+
+    <script>
+        const teams = [
+    "Manchester City: England: OVR 85: ATT 87: MID 86: DEF 83",
+    "Real Madrid CF: Spain: OVR 85: ATT 85: MID 85: DEF 83",
+    "FC Bayern München: Germany: OVR 84: ATT 90: MID 84: DEF 83",
+    "FC Barcelona: Spain: OVR 84: ATT 84: MID 84: DEF 83",
+    "Liverpool: England: OVR 83: ATT 84: MID 82: DEF 84",
+    "Paris Saint-Germain: France: OVR 83: ATT 86: MID 79: DEF 83",
+    "Atlético de Madrid: Spain: OVR 83: ATT 85: MID 82: DEF 81",
+    "Inter: Italy: OVR 82: ATT 81: MID 82: DEF 82",
+    "Arsenal: England: OVR 82: ATT 82: MID 84: DEF 81",
+    "Manchester United: England: OVR 82: ATT 82: MID 83: DEF 80",
+    "Newcastle United: England: OVR 81: ATT 79: MID 81: DEF 82",
+    "Tottenham Hotspur: England: OVR 81: ATT 81: MID 80: DEF 79",
+    "Borussia Dortmund: Germany: OVR 81: ATT 81: MID 81: DEF 81",
+    "Napoli: Italy: OVR 81: ATT 82: MID 82: DEF 80",
+    "Aston Villa: England: OVR 80: ATT 82: MID 79: DEF 79",
+    "Chelsea: England: OVR 80: ATT 77: MID 81: DEF 78",
+    "Bayer 04 Leverkusen: Germany: OVR 80: ATT 81: MID 81: DEF 79",
+    "RB Leipzig: Germany: OVR 80: ATT 82: MID 79: DEF 79",
+    "Juventus: Italy: OVR 80: ATT 81: MID 80: DEF 79",
+    "Lazio: Italy: OVR 80: ATT 81: MID 79: DEF 80",
+    "AC Milan: Italy: OVR 80: ATT 81: MID 79: DEF 81",
+    "Roma: Italy: OVR 80: ATT 82: MID 78: DEF 81",
+    "Sevilla FC: Spain: OVR 80: ATT 80: MID 79: DEF 82",
+    "Athletic Club de Bilbao: Spain: OVR 79: ATT 77: MID 79: DEF 77",
+    "Real Betis Balompié: Spain: OVR 79: ATT 83: MID 79: DEF 77",
+    "Real Sociedad: Spain: OVR 79: ATT 79: MID 81: DEF 79",
+    "Villarreal CF: Spain: OVR 79: ATT 79: MID 80: DEF 77",
+    "SL Benfica: Portugal: OVR 79: ATT 80: MID 81: DEF 77",
+    "West Ham United: England: OVR 78: ATT 78: MID 79: DEF 78",
+    "Fiorentina: Italy: OVR 78: ATT 78: MID 77: DEF 78",
+    "Atalanta: Italy: OVR 78: ATT 79: MID 77: DEF 77",
+    "Galatasaray SK: Turkey: OVR 78: ATT 80: MID 79: DEF 78",
+    "Olympique de Marseille: France: OVR 78: ATT 77: MID 78: DEF 78",
+    "FC Porto: Portugal: OVR 78: ATT 78: MID 78: DEF 77",
+    "AFC Richmond: England: OVR 78: ATT 81: MID 79: DEF 77",
+    "Everton: England: OVR 77: ATT 79: MID 77: DEF 75",
+    "Nottingham Forest: England: OVR 77: ATT 75: MID 77: DEF 75",
+    "Brighton & Hove Albion: England: OVR 77: ATT 77: MID 77: DEF 78",
+    "1. FC Union Berlin: Germany: OVR 77: ATT 77: MID 75: DEF 77",
+    "Racing Club de Lens: France: OVR 77: ATT 77: MID 76: DEF 77",
+    "AS Monaco: France: OVR 77: ATT 81: MID 77: DEF 75",
+    "Fenerbahçe SK: Turkey: OVR 77: ATT 78: MID 76: DEF 74",
+    "Al Hilal: Saudi Arabia: OVR 77: ATT 79: MID 79: DEF 74",
+    "Al Ittihad: Saudi Arabia: OVR 77: ATT 83: MID 79: DEF 70",
+    "Fulham: England: OVR 77: ATT 76: MID 77: DEF 76",
+    "VfL Wolfsburg: Germany: OVR 77: ATT 76: MID 78: DEF 75",
+    "CA Osasuna: Spain: OVR 77: ATT 77: MID 77: DEF 77",
+    "Sporting CP: Portugal: OVR 77: ATT 78: MID 77: DEF 78",
+    "Crystal Palace: England: OVR 76: ATT 75: MID 76: DEF 76",
+    "Al Nassr: Saudi Arabia: OVR 76: ATT 86: MID 77: DEF 74"
+];
+
+        function generateTeam(teamId) {
+            const randomTeam = teams[Math.floor(Math.random() * teams.length)];
+            document.getElementById(teamId).innerText = randomTeam;
+
+            // Log the generated team
+            const logList = document.getElementById(`log-list${teamId.charAt(teamId.length - 1)}`);
+            const logItem = document.createElement("li");
+            logItem.className = "log-list-item";
+            logItem.innerText = randomTeam;
+            logList.appendChild(logItem);
+        }
+
+        function resetLog(logId) {
+            document.getElementById(logId).innerHTML = "";
+        }
+    </script>
+</body>
+</html>
